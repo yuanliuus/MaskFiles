@@ -122,7 +122,7 @@ foreach(dir ${CONAN_INCLUDE_DIRS})
     set(M_D "${M_D} -I \"${dir}\"")
 endforeach()
 
-add_custom_target(upload_${PROJECT_NAME}
+add_custom_target(upload_PDK
 #        COMMAND ${CMAKE_CXX_COMPILER} -O3 -std=gnu++17 -x c++-header ${CMAKE_CURRENT_SOURCE_DIR}/${PDK_NAME}.h ${M_D}
         COMMAND conan export-pkg ./.. ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -f --build-folder ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND conan remote add libmask https://api.bintray.com/conan/cmalips/libmask -f
