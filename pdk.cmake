@@ -6,6 +6,9 @@ file(GLOB TEST_FILES "test.cpp")
 add_compile_definitions(GDS_FILENAME="${GDS_FILENAME}")
 add_compile_definitions(MASK_NAME="${MASK_NAME}")
 
+set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
+set(CONAN_USER "cmalips")
+set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_LINKER_LINKER_FLAGS "-lc++ -lc++abi")
@@ -125,8 +128,8 @@ endforeach()
 add_custom_target(upload_PDK
 #        COMMAND ${CMAKE_CXX_COMPILER} -O3 -std=gnu++17 -x c++-header ${CMAKE_CURRENT_SOURCE_DIR}/${PDK_NAME}.h ${M_D}
         COMMAND conan export-pkg ./.. ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -f --build-folder ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND conan remote add libmask https://api.bintray.com/conan/cmalips/libmask -f
-        COMMAND conan user -p d34395fccb84e2eb9e5c07641e990e041168527b -r libmask  cmalips
+        COMMAND conan remote add libmask ${CONAN_URL} -f
+        COMMAND conan user -p ${CONAN_TOKEN} -r libmask  ${CONAN_USER}
         COMMAND conan upload ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -r libmask --all
         DEPENDS ${PDK_NAME}
         COMMENT "Uploading ${PROJECT_NAME}")
