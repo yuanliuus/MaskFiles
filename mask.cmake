@@ -19,8 +19,8 @@ add_compile_definitions(MASK_NAME="${MASK_NAME}")
 set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
 set(CONAN_USER "cmalips")
 set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
-set(ENV{CONAN_LOGIN_USERNAME}, ${CONAN_USER})
-set(ENV{CONAN_PASSWORD}, ${CONAN_TOKEN})
+#set(ENV{CONAN_LOGIN_USERNAME}, ${CONAN_USER})
+#set(ENV{CONAN_PASSWORD}, ${CONAN_TOKEN})
 
 #set(CMAKE_CXX_FLAGS "-Wno-literal-suffix")
 set(CMAKE_CXX_STANDARD 17)
@@ -60,9 +60,9 @@ conan_add_remote(NAME libmask INDEX 1
         URL ${CONAN_URL}
         VERIFY_SSL True)
 
-execute_process(COMMAND ${CONAN_CMD} user --clean)
-execute_process(COMMAND ${CONAN_CMD} user -r=libmask -p OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
-message(STATUS OUTPUTV)
+#execute_process(COMMAND ${CONAN_CMD} user --clean)
+execute_process(COMMAND ${CONAN_CMD} user ${CONAN_USER} -r=libmask -p ${CONAN_TOKEN} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+message(STATUS ${OUTPUTV})
 
 conan_cmake_run(REQUIRES
         ${PDK_NAME}/${PDK_VERSION}@cmalips/stable
