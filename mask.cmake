@@ -61,7 +61,9 @@ conan_add_remote(NAME libmask INDEX 1
         VERIFY_SSL True)
 
 execute_process(COMMAND ${CONAN_CMD} user --clean)
-execute_process(COMMAND ${CONAN_CMD} user -r=libmask -p)
+execute_process(COMMAND ${CONAN_CMD} user -r=libmask -p OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+message(STATUS OUTPUTV)
+
 conan_cmake_run(REQUIRES
         ${PDK_NAME}/${PDK_VERSION}@cmalips/stable
         BASIC_SETUP
