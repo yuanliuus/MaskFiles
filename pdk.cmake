@@ -36,7 +36,7 @@ endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 conan_check()
 conan_add_remote(NAME libmask
-        URL https://api.bintray.com/conan/cmalips/libmask)
+        URL ${CONAN_URL})
 conan_cmake_run(REQUIRES Libmask/${MASK_LIB_VERSION}@cmalips/stable
         BASIC_SETUP
         UPDATE
