@@ -18,7 +18,7 @@ add_compile_definitions(MASK_NAME="${MASK_NAME}")
 
 
 #FILE(READ ${CMAKE_SOURCE_DIR}/CMakeLists.txt CMAKELISTS)
-#STRING(REGEX REPLACE "https://bintray.com/cmalips/libmask/download_file?file_path=" "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/" CMAKELISTS "${CMAKELISTS}" )
+#STRING(REGEX REPLACE "https://bintray.com/cmalips/libmask/download_file\\?file_path=" "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/" CMAKELISTS "${CMAKELISTS}" )
 #STRING(REGEX REPLACE "from https://bintray.com/cmalips/libmask/" "..." CMAKELISTS "${CMAKELISTS}" )
 #FILE(WRITE ${CMAKE_SOURCE_DIR}/CMakeLists.txt "${CMAKELISTS}")
 
