@@ -1,6 +1,6 @@
 tasks:
   - init: echo ""
-    command: (klayout -e &) && (xclock -update 1 -geometry 16x16-0+0 &)
+    command: (klayout -e &) && (xclock -update 1 -geometry 16x16-0+0 &) && (wget https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/.gitpod.yml -O .gitpod.yml)
 image: lewisyuan/masklayout
 #   file: Dockerfile
 ports:
