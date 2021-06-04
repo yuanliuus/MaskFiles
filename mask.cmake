@@ -16,6 +16,13 @@ aux_source_directory(. SOURCE_FILES)
 add_compile_definitions(GDS_FILENAME="${GDS_FILENAME}")
 add_compile_definitions(MASK_NAME="${MASK_NAME}")
 
+
+#FILE(READ ${CMAKE_SOURCE_DIR}/CMakeLists.txt CMAKELISTS)
+#STRING(REGEX REPLACE "https://bintray.com/cmalips/libmask/download_file\\?file_path=" "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/" CMAKELISTS "${CMAKELISTS}" )
+#STRING(REGEX REPLACE "from https://bintray.com/cmalips/libmask/" "..." CMAKELISTS "${CMAKELISTS}" )
+#FILE(WRITE ${CMAKE_SOURCE_DIR}/CMakeLists.txt "${CMAKELISTS}")
+
+
 set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
 set(CONAN_USER "cmalips")
 set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
