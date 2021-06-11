@@ -16,6 +16,7 @@ aux_source_directory(. SOURCE_FILES)
 add_compile_definitions(GDS_FILENAME="${GDS_FILENAME}")
 add_compile_definitions(MASK_NAME="${MASK_NAME}")
 
+set(MASK_FILENAME ${GDS_FILENAME} CACHE STRING "")
 
 #FILE(READ ${CMAKE_SOURCE_DIR}/CMakeLists.txt CMAKELISTS)
 #STRING(REGEX REPLACE "https://bintray.com/cmalips/libmask/download_file\\?file_path=" "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/" CMAKELISTS "${CMAKELISTS}" )
