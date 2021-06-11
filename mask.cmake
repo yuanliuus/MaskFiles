@@ -100,6 +100,6 @@ set_target_properties(${PROJECT_NAME}
 
 add_custom_target(Generate_GDS
         COMMAND $<TARGET_FILE:${PROJECT_NAME}>
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DEPENDS ${PROJECT_NAME}
         COMMENT "Generate ${GDS_FILENAME}")
