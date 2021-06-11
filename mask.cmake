@@ -95,11 +95,11 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} "-static")
 
 set_target_properties(${PROJECT_NAME} 
-                      PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#                      PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                       )
 
 add_custom_target(Generate_GDS
         COMMAND $<TARGET_FILE:${PROJECT_NAME}>
-#       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DEPENDS ${PROJECT_NAME}
         COMMENT "Generate ${GDS_FILENAME}")
