@@ -107,6 +107,7 @@ file(GLOB COPY_FILES
         "*.gds"
         "${CONAN_LIBMASK_ROOT}/*.plf"
         "*.plf"
+        "license.yml"
         )
 # file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/)
