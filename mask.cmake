@@ -71,6 +71,9 @@ conan_add_remote(NAME libmask INDEX 1
 #execute_process(COMMAND ${CONAN_CMD} user --clean)
 execute_process(COMMAND ${CONAN_CMD} user ${CONAN_USER} -r=libmask -p ${CONAN_TOKEN} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
 message(STATUS ${OUTPUTV})
+execute_process(COMMAND ${CONAN_CMD} remote disable conan-center OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+message(STATUS ${OUTPUTV})
+
 
 conan_cmake_run(REQUIRES
         ${PDK_NAME}/${PDK_VERSION}@cmalips/stable
