@@ -44,6 +44,9 @@ conan_add_remote(NAME libmask
         URL ${CONAN_URL})
 execute_process(COMMAND ${CONAN_CMD} user ${CONAN_USER} -r=libmask -p ${CONAN_TOKEN} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
 message(STATUS ${OUTPUTV})
+execute_process(COMMAND ${CONAN_CMD} remote disable conan-center OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+message(STATUS ${OUTPUTV})
+
 conan_cmake_run(REQUIRES Libmask/${MASK_LIB_VERSION}@cmalips/stable
         BASIC_SETUP
         UPDATE
