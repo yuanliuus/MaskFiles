@@ -12,8 +12,10 @@ add_compile_definitions(MASK_NAME="${MASK_NAME}")
 #FILE(WRITE ${CMAKE_SOURCE_DIR}/CMakeLists.txt "${CMAKELISTS}")
 
 set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
-set(CONAN_USER "cmalips")
-set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
+if(NOT DEFINED CONAN_USER)
+    set(CONAN_USER "cmalips")
+    set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
+endif(NOT DEFINED CONAN_USER)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_LINKER_LINKER_FLAGS "-lc++ -lc++abi")
