@@ -25,8 +25,10 @@ set(MASK_FILENAME ${GDS_FILENAME} CACHE STRING "")
 
 
 set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
-set(CONAN_USER "cmalips")
-set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
+if(NOT DEFINED CONAN_USER)
+    set(CONAN_USER "cmalips")
+    set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
+endif()
 #set(ENV{CONAN_LOGIN_USERNAME}, ${CONAN_USER})
 #set(ENV{CONAN_PASSWORD}, ${CONAN_TOKEN})
 
