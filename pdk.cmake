@@ -15,7 +15,7 @@ set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
 if(NOT DEFINED CONAN_USER)
     set(CONAN_USER "cmalips")
     set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
-endif(NOT DEFINED CONAN_USER)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_LINKER_LINKER_FLAGS "-lc++ -lc++abi")
