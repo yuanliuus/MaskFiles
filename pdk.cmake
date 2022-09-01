@@ -45,7 +45,7 @@ endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 conan_check()
 conan_add_remote(NAME masklayout
-        URL ${CONAN_URL})
+        URL ${MASK_URL})
 execute_process(COMMAND ${CONAN_CMD} user ${MASK_USER} -r=masklayout -p ${MASK_SECRET} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
 message(STATUS ${OUTPUTV})
 execute_process(COMMAND ${CONAN_CMD} remote disable conan-center OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
