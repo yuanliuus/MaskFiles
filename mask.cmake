@@ -89,7 +89,6 @@ conan_cmake_run(REQUIRES
 
 file(GLOB COPY_FILES
         "*.gds"
-        "${CONAN_LIBMASK_ROOT}/*.gds"
         "${CONAN_LIBMASK_ROOT}/*.plf"
         "*.plf"
         "license.yml"
