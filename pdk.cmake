@@ -11,9 +11,13 @@ add_compile_definitions(MASK_NAME="${MASK_NAME}")
 #STRING(REGEX REPLACE "from https://bintray.com/cmalips/libmask/" "..." CMAKELISTS "${CMAKELISTS}" )
 #FILE(WRITE ${CMAKE_SOURCE_DIR}/CMakeLists.txt "${CMAKELISTS}")
 
-set(CONAN_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
-set(CONAN_USER "cmalips")
-set(CONAN_TOKEN "nYicFZBWhHe8z7xTVzY7")
+if(NOT DEFINED MASK_URL)
+    set(MASK_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
+endif()
+if(NOT DEFINED MASK_USER)
+    set(MASK_USER "cmalips")
+    set(MASK_SECRET "nYicFZBWhHe8z7xTVzY7")
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_LINKER_LINKER_FLAGS "-lc++ -lc++abi")
@@ -40,10 +44,13 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 conan_check()
-conan_add_remote(NAME libmask
-        URL ${CONAN_URL})
-execute_process(COMMAND ${CONAN_CMD} user ${CONAN_USER} -r=libmask -p ${CONAN_TOKEN} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+conan_add_remote(NAME masklayout
+        URL ${MASK_URL})
+execute_process(COMMAND ${CONAN_CMD} user ${MASK_USER} -r=masklayout -p ${MASK_SECRET} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
 message(STATUS ${OUTPUTV})
+execute_process(COMMAND ${CONAN_CMD} remote disable conan-center OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
+message(STATUS ${OUTPUTV})
+
 conan_cmake_run(REQUIRES Libmask/${MASK_LIB_VERSION}@cmalips/stable
         BASIC_SETUP
         UPDATE
@@ -107,6 +114,7 @@ file(GLOB COPY_FILES
         "*.gds"
         "${CONAN_LIBMASK_ROOT}/*.plf"
         "*.plf"
+        "license.yml"
         )
 # file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/)
@@ -135,8 +143,8 @@ endforeach()
 add_custom_target(upload_PDK
 #        COMMAND ${CMAKE_CXX_COMPILER} -O3 -std=gnu++17 -x c++-header ${CMAKE_CURRENT_SOURCE_DIR}/${PDK_NAME}.h ${M_D}
         COMMAND conan export-pkg ./.. ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -f --build-folder ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND conan remote add libmask ${CONAN_URL} -f
-        COMMAND conan user -p ${CONAN_TOKEN} -r libmask  ${CONAN_USER}
-        COMMAND conan upload ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -r libmask --all
+        COMMAND conan remote add masklayout ${MASK_URL} -f
+        COMMAND conan user -p ${MASK_SECRET} -r masklayout  ${MASK_USER}
+        COMMAND conan upload ${PDK_NAME}/${PDK_VERSION}@cmalips/stable -r masklayout --all
         DEPENDS ${PDK_NAME}
         COMMENT "Uploading ${PROJECT_NAME}")
