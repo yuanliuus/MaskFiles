@@ -30,7 +30,7 @@ class PdkConan(ConanFile):
     def package(self):
         self.copy(\"*.h\", dst=\"include\", src=\"${PDK_SOURCE_FILES_DIR}\", excludes=(\"*cmake-build-*\", \"*build*\"), keep_path=True)
         self.copy(\"*.a\", dst=\"lib\", src=\"lib\", keep_path=False)
-        self.copy(\"*\", dst=\"resources\", src=\"${RESOURCE_FILES_DIR}\", keep_path=True)
+        self.copy(\"*\", dst=\"res\", src=\"${RESOURCE_FILES_DIR}\", keep_path=True)
 
     def package_info(self):
         self.cpp_info.libs = [\"${PDK_NAME}\"] ")
@@ -41,7 +41,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/conanfile.py ${CONANFILE_PY})
 
 add_custom_command(
     OUTPUT res.o
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
+    WORKING_DIRECTORY ${RESOURCE_FILES_DIR}
     COMMAND ld -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/res.o *
     COMMENT "Compile resource files to res.o"
 )

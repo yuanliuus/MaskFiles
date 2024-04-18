@@ -10,9 +10,9 @@ add_compile_definitions(MASK_TOPCELL_NAME="${MASK_TOPCELL_NAME}")
 add_compile_definitions(TEST_GDS_FILENAME="${TEST_GDS_FILENAME}")
 add_compile_definitions(TEST_TOPCELL_NAME="${TEST_TOPCELL_NAME}")
 
-set(MASK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/sources)
-set(PDK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/sources/pdk_src)
-set(RESOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+set(MASK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(PDK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/components)
+set(RESOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/res)
 
 file(GLOB MASK_FILES ${MASK_SOURCE_FILES_DIR}/${MASK_FILES})
 file(GLOB TEST_FILES ${MASK_SOURCE_FILES_DIR}/${TEST_FILES})
@@ -33,11 +33,15 @@ endif()
 
 set(CMAKE_BUILD_TYPE Release)
 
-set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD 23)
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++ -lc++abi")
 
 # set(CMAKE_C_FLAGS "--std=c2x")
 # set(CMAKE_CXX_FLAGS "--std=gnu++23")
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# add_compile_options(-fmodules-ts)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/output/)
 
@@ -89,7 +93,7 @@ conan_cmake_run(REQUIRES
         BASIC_SETUP
         UPDATE
         BUILD missing
-        IMPORTS "resources, * -> ./bin"
+        IMPORTS "res, * -> ./bin"
         NO_OUTPUT_DIRS
         )
 
@@ -127,11 +131,11 @@ file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
 if(NOT DEFINED PDK_NAME)
     add_executable("MASK_GDS" ${MASK_FILES} ${SOURCE_FILES})
     target_link_libraries("MASK_GDS" ${CONAN_LIBS} )
-    target_include_directories("MASK_GDS" PUBLIC "${PDK_SOURCE_FILES_DIR}")
+    target_include_directories("MASK_GDS" PRIVATE "${PDK_SOURCE_FILES_DIR}")
     # target_link_options("MASK_GDS" PRIVATE "--wrap=Check_Lic")
     add_executable("TEST_GDS" ${TEST_FILES} ${SOURCE_FILES})
     target_link_libraries("TEST_GDS" ${CONAN_LIBS})
-    target_include_directories("TEST_GDS" PUBLIC "${PDK_SOURCE_FILES_DIR}")
+    target_include_directories("TEST_GDS" PRIVATE "${PDK_SOURCE_FILES_DIR}")
     return()
 endif()
 
@@ -139,7 +143,7 @@ if(DEFINED PDK_NAME)
     message(STATUS "Downloading pdk.cmake ...")
     # file(DOWNLOAD "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/pdk.cmake"
     #         "${CMAKE_BINARY_DIR}/pdk.cmake")
-    include(${CMAKE_BINARY_DIR}/pdk.cmake)
+    include(${CMAKE_MASK_CMAKE_FILE_DIR}/pdk.cmake)
 endif()
 
 
