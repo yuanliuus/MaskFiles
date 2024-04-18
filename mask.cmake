@@ -129,6 +129,7 @@ file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 
 if(NOT DEFINED PDK_NAME)
+    list(REMOVE_ITEM SOURCE_FILES "${MASK_SOURCE_FILES_DIR}/technology.cpp")
     add_executable("MASK_GDS" ${MASK_FILES} ${SOURCE_FILES})
     target_link_libraries("MASK_GDS" ${CONAN_LIBS} )
     target_include_directories("MASK_GDS" PRIVATE "${PDK_SOURCE_FILES_DIR}")
