@@ -81,7 +81,7 @@ message(STATUS ${OUTPUTV})
 
 # Convert the CMake list into a semicolon-separated string, then replace semicolons with Python list syntax
 if(DEFINED PDK_NAME)
-    list(APPEND PDK_REQUIRED "Libmask/${MASK_KIT_VERSION}@cmalips/stable")
+    list(APPEND PDK_REQUIRED "maskcore/${MASK_KIT_VERSION}@cmalips/stable")
 endif()
 # message(STATUS ${PDK_REQUIRED})
 
