@@ -50,6 +50,7 @@ file(GLOB PDK_SOURCE_FILES
         "${PDK_SOURCE_FILES_DIR}/*.cpp"
         )
 add_library(${PDK_NAME} STATIC ${PDK_SOURCE_FILES} res.o)
+# target_sources(${PDK_NAME} PUBLIC FILE_SET CXX_MODULES FILES ${PDK_SOURCE_FILES_DIR}/module_test.cpp)
 # target_compile_definitions(${PDK_NAME} PRIVATE -include ${PDK_SOURCE_FILES_DIR}/${PDK_NAME}.h)
 # message(${PDK_SOURCE_FILES_DIR}/${PDK_NAME}.h)
 
