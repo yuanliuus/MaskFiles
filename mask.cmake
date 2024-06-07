@@ -145,7 +145,7 @@ endif()
 
 if(DEFINED PDK_NAME)
     message(STATUS "Downloading pdk.cmake ...")
-    file(DOWNLOAD "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/pdk.cmake"
+    file(DOWNLOAD "https://raw.githubusercontent.com/yuanliuus/MaskFiles/v2/pdk.cmake"
             "${CMAKE_BINARY_DIR}/pdk.cmake")
     include(${CMAKE_MASK_CMAKE_FILE_DIR}/pdk.cmake)
 endif()
