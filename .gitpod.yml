@@ -1,0 +1,16 @@
+tasks:
+  - init: echo ""
+    command: wget https://raw.githubusercontent.com/yuanliuus/MaskFiles/v2/.gitpod.yml -q -O .gitpod.yml
+image: lewisyuan/masklayout:develop
+
+ports:
+  - port: 5900
+    onOpen: ignore
+  - port: 6080
+    onOpen: open-preview
+    
+vscode:
+  extensions:
+    - ms-vscode.cmake-tools
+    - llvm-vs-code-extensions.vscode-clangd
+    - https://raw.githubusercontent.com/yuanliuus/MaskFiles/v2/extensions/maskkits-0.1.0.vsix
