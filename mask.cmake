@@ -1,14 +1,19 @@
-## mask.cmake
+## mask.cmake - Modernized for Conan 2 and CMake 3.28+
 
-# DO NOT modifiy codes below
-# set(${SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/sources)
-# file(GLOB TEST_FILES "sources/test.cpp")
+# DO NOT modify codes below unless you know what you're doing
+# ============================================================================
+# Compile Definitions
+# ============================================================================
 
 add_compile_definitions(MASK_GDS_FILENAME="${MASK_GDS_FILENAME}")
 add_compile_definitions(MASK_TOPCELL_NAME="${MASK_TOPCELL_NAME}")
 
 add_compile_definitions(TEST_GDS_FILENAME="${TEST_GDS_FILENAME}")
 add_compile_definitions(TEST_TOPCELL_NAME="${TEST_TOPCELL_NAME}")
+
+# ============================================================================
+# Directory Configuration
+# ============================================================================
 
 set(MASK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(PDK_SOURCE_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/components)
@@ -18,135 +23,176 @@ set(OUTPUT_DIR ${CMAKE_SOURCE_DIR}/output/)
 file(GLOB MASK_FILES ${MASK_SOURCE_FILES_DIR}/${MASK_FILES})
 file(GLOB TEST_FILES ${MASK_SOURCE_FILES_DIR}/${TEST_FILES})
 
-
-#FILE(READ ${CMAKE_SOURCE_DIR}/CMakeLists.txt CMAKELISTS)
-#STRING(REGEX REPLACE "https://bintray.com/cmalips/libmask/download_file\\?file_path=" "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/" CMAKELISTS "${CMAKELISTS}" )
-#STRING(REGEX REPLACE "from https://bintray.com/cmalips/libmask/" "..." CMAKELISTS "${CMAKELISTS}" )
-#FILE(WRITE ${CMAKE_SOURCE_DIR}/CMakeLists.txt "${CMAKELISTS}")
+# ============================================================================
+# Server Configuration
+# ============================================================================
 
 if(NOT DEFINED MASK_URL)
-    set(MASK_URL "https://gitlab.com/api/v4/projects/25869414/packages/conan")
+    set(MASK_URL "https://fnmlz9lk-9300.usw3.devtunnels.ms")
 endif()
 if(NOT DEFINED MASK_USER)
     set(MASK_USER "cmalips")
-    set(MASK_SECRET "nYicFZBWhHe8z7xTVzY7")
+    set(MASK_SECRET "cmalips")
 endif()
+
+# ============================================================================
+# Build Configuration
+# ============================================================================
 
 set(CMAKE_BUILD_TYPE Release)
 
-# set(CMAKE_CXX_STANDARD 23)
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++ -lc++abi")
-
-# set(CMAKE_C_FLAGS "--std=c2x")
-# set(CMAKE_CXX_FLAGS "--std=gnu++23")
-
+# Modern C/C++ standards
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# add_compile_options(-fmodules-ts)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 
-#set(LIBMASK_PATH "../libmaskV7")
-#include_directories(${LIBMASK_PATH}/includes/)
-#link_directories(${LIBMASK_PATH}/libs/)
+# ============================================================================
+# Conan 2 Integration
+# ============================================================================
 
-
-# file(REMOVE "${CMAKE_BINARY_DIR}/conanfile.py")
-
-
-# Download automatically, you can also just copy the conan.cmake file
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
-            "${CMAKE_BINARY_DIR}/conan.cmake")
-endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-conan_check()
-conan_add_remote(NAME masklayout
-        URL ${MASK_URL})
-execute_process(COMMAND ${CONAN_CMD} user ${MASK_USER} -r=masklayout -p ${MASK_SECRET} OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
-message(STATUS ${OUTPUTV})
-execute_process(COMMAND ${CONAN_CMD} remote disable conan-center OUTPUT_VARIABLE OUTPUTV ERROR_VARIABLE OUTPUTV)
-message(STATUS ${OUTPUTV})
-
-
-# # Construct the REQUIRES string
-# set(REQUIRES_STR "")
-# foreach(PDK IN LISTS PDK_REQUIRED)
-#     string(APPEND REQUIRES_STR "${PDK} ")
-# endforeach()
-
-# # Trim the trailing space
-# string(STRIP "${REQUIRES_STR}" REQUIRES_STR)
-
-# Convert the CMake list into a semicolon-separated string, then replace semicolons with Python list syntax
+# Always require libmask bundle package
 if(DEFINED PDK_NAME)
-    list(APPEND PDK_REQUIRED "maskcore/${MASK_KIT_VERSION}@cmalips/stable")
+    # PDK development mode - add libmask as dependency
+    list(APPEND PDK_REQUIRED "libmask/${MASK_KIT_VERSION}@${MASK_USER}/stable")
 endif()
-# message(STATUS ${PDK_REQUIRED})
+
+# Generate conanfile.txt for Conan 2
+file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/conanfile.txt)
+
+set(CONAN_REQUIRES_LIST "")
+foreach(PKG IN LISTS PDK_REQUIRED)
+    string(APPEND CONAN_REQUIRES_LIST "${PKG}\n")
+endforeach()
+
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/conanfile.txt
+"[requires]
+${CONAN_REQUIRES_LIST}
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[options]
+libmask/*:shared=False
+")
+
+message(STATUS "Generated conanfile.txt for Conan 2")
+message(STATUS "Required packages: ${PDK_REQUIRED}")
+
+# Check if Conan has already been run
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conan_toolchain.cmake)
+    message(STATUS "==============================================================")
+    message(STATUS "Conan 2 dependencies not found. Please run:")
+    message(STATUS "  cd ${CMAKE_CURRENT_BINARY_DIR}")
+    message(STATUS "  conan install . --build=missing")
+    message(STATUS "Then re-run CMake configuration.")
+    message(STATUS "==============================================================")
+    message(FATAL_ERROR "Conan dependencies not installed. Run 'conan install' first.")
+endif()
+
+# Include Conan-generated CMake files
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
+
+# Find libmask package
+find_package(libmask REQUIRED CONFIG)
 
 
-file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/conanfile.py)
+# ============================================================================
+# Generate CMakePresets.json for VS Code CMake Extension
+# ============================================================================
 
-conan_cmake_run(REQUIRES 
-        ${PDK_REQUIRED}
-        BASIC_SETUP
-        UPDATE
-        BUILD missing
-        IMPORTS "res, * -> ${OUTPUT_DIR}"
-        NO_OUTPUT_DIRS
-        )
+# Generate CMakePresets.json in the project root for VS Code
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/CMakePresets.json)
+    message(STATUS "Generating CMakePresets.json for VS Code CMake Extension...")
+    file(WRITE ${CMAKE_SOURCE_DIR}/CMakePresets.json
+"{
+    \"version\": 3,
+    \"vendor\": {
+        \"conan\": {}
+    },
+    \"cmakeMinimumRequired\": {
+        \"major\": 3,
+        \"minor\": 15,
+        \"patch\": 0
+    },
+    \"configurePresets\": [
+        {
+            \"name\": \"conan-release\",
+            \"displayName\": \"Conan Release (Ninja)\",
+            \"description\": \"Release build using Ninja generator with Conan dependencies\",
+            \"generator\": \"Ninja\",
+            \"cacheVariables\": {
+                \"CMAKE_POLICY_DEFAULT_CMP0091\": \"NEW\",
+                \"CMAKE_BUILD_TYPE\": \"Release\",
+                \"CMAKE_EXPORT_COMPILE_COMMANDS\": \"ON\"
+            },
+            \"toolchainFile\": \"\${sourceDir}/build/conan_toolchain.cmake\",
+            \"binaryDir\": \"\${sourceDir}/build\"
+        }
+    ],
+    \"buildPresets\": [
+        {
+            \"name\": \"conan-release\",
+            \"configurePreset\": \"conan-release\",
+            \"jobs\": 4
+        }
+    ]
+}
+")
+    message(STATUS "✅ CMakePresets.json generated successfully")
+endif()
 
 
 
+
+# ============================================================================
+# Source Files Collection
+# ============================================================================
 
 file(GLOB_RECURSE SOURCE_FILES
         "${MASK_SOURCE_FILES_DIR}/*.cpp"
         )
-# aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/sources SOURCE_FILES)
 
 list(REMOVE_ITEM SOURCE_FILES ${MASK_FILES})
 list(REMOVE_ITEM SOURCE_FILES ${TEST_FILES})
 
+# ============================================================================
+# Resource Files
+# ============================================================================
 
 file(GLOB COPY_FILES
         ${RESOURCE_FILES_DIR}/*
         "license.yml"
 )
 
-# foreach(PDK_NAME_FULL ${PDK_REQUIRED})
-#     string(REGEX MATCH "^[^/]+" dir ${PDK_NAME_FULL})
-#     string(TOUPPER "${dir}" dir)
-#     # Generate a list of files in the current directory
-#     file(GLOB files_in_dir "CONAN_${dir}_ROOT/resources/*")
-#     # Append the files in the current directory to the main list
-#     list(APPEND COPY_FILES ${files_in_dir})
-# endforeach()
-
-# file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
-# file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/)
-# file(COPY ${COPY_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
 file(COPY ${COPY_FILES} DESTINATION ${OUTPUT_DIR})
 
+# ============================================================================
+# Build Targets
+# ============================================================================
 
 if(NOT DEFINED PDK_NAME)
+    # Simple mask project without PDK development
     list(REMOVE_ITEM SOURCE_FILES "${MASK_SOURCE_FILES_DIR}/technology.cpp")
+    
     add_executable("MASK_GDS" ${MASK_FILES} ${SOURCE_FILES})
-    # target_sources("MASK_GDS" PUBLIC FILE_SET CXX_MODULES FILES ${SOURCE_FILES})
-    target_link_libraries("MASK_GDS" ${CONAN_LIBS} )
+    target_link_libraries("MASK_GDS" PRIVATE libmask::libmask)
     target_include_directories("MASK_GDS" PRIVATE "${PDK_SOURCE_FILES_DIR}")
-    # target_link_options("MASK_GDS" PRIVATE "--wrap=Check_Lic")
+    
     add_executable("TEST_GDS" ${TEST_FILES} ${SOURCE_FILES})
-    target_link_libraries("TEST_GDS" ${CONAN_LIBS})
+    target_link_libraries("TEST_GDS" PRIVATE libmask::libmask)
     target_include_directories("TEST_GDS" PRIVATE "${PDK_SOURCE_FILES_DIR}")
+    
+    message(STATUS "Configured simple mask project (no PDK development)")
     return()
 endif()
 
 if(DEFINED PDK_NAME)
-    message(STATUS "Downloading pdk.cmake ...")
-    # file(DOWNLOAD "https://raw.githubusercontent.com/yuanliuus/MaskFiles/master/pdk.cmake"
-    #         "${CMAKE_BINARY_DIR}/pdk.cmake")
+    # PDK development mode
+    message(STATUS "PDK development mode enabled for: ${PDK_NAME}")
     include(${CMAKE_MASK_CMAKE_FILE_DIR}/pdk.cmake)
 endif()
 
